@@ -2,22 +2,37 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>ResQNet Disaster Monitoring</title>
 
-    <!-- Leaflet Map -->
+
+    <!-- =====================================================
+         LEAFLET MAP CSS
+         ===================================================== -->
+
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    />
+    >
+
+
+    <!-- =====================================================
+         STYLES
+         ===================================================== -->
 
     <style>
 
         * {
             box-sizing: border-box;
         }
+
 
         body {
             margin: 0;
@@ -26,21 +41,33 @@
             color: white;
         }
 
+
+        /* =================================================
+           HEADER
+           ================================================= */
+
         .header {
             padding: 22px 30px;
             background: #111827;
             border-bottom: 1px solid #334155;
         }
 
+
         .header h1 {
             margin: 0;
             font-size: 30px;
         }
 
+
         .header p {
             margin: 8px 0 0;
             color: #94a3b8;
         }
+
+
+        /* =================================================
+           STATUS
+           ================================================= */
 
         .status {
             margin-top: 12px;
@@ -52,11 +79,28 @@
             font-weight: bold;
         }
 
+
+        .updated {
+            color: #94a3b8;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+
+        /* =================================================
+           MAIN CONTAINER
+           ================================================= */
+
         .container {
             padding: 25px;
             max-width: 1400px;
             margin: auto;
         }
+
+
+        /* =================================================
+           SUMMARY CARDS
+           ================================================= */
 
         .cards {
             display: grid;
@@ -65,6 +109,7 @@
             margin-bottom: 25px;
         }
 
+
         .card {
             background: #1e293b;
             border: 1px solid #334155;
@@ -72,16 +117,23 @@
             padding: 20px;
         }
 
+
         .card-title {
             color: #94a3b8;
             font-size: 14px;
             margin-bottom: 10px;
         }
 
+
         .card-value {
             font-size: 30px;
             font-weight: bold;
         }
+
+
+        /* =================================================
+           NODE GRID
+           ================================================= */
 
         .nodes {
             display: grid;
@@ -90,6 +142,7 @@
             margin-bottom: 25px;
         }
 
+
         .node {
             background: #1e293b;
             border: 1px solid #334155;
@@ -97,9 +150,11 @@
             padding: 20px;
         }
 
+
         .node h2 {
             margin-top: 0;
         }
+
 
         .node-row {
             display: flex;
@@ -108,34 +163,50 @@
             border-bottom: 1px solid #334155;
         }
 
+
         .node-row:last-child {
             border-bottom: none;
         }
+
 
         .label {
             color: #94a3b8;
         }
 
+
         .value {
             font-weight: bold;
         }
+
+
+        /* =================================================
+           SEVERITY COLORS
+           ================================================= */
 
         .safe {
             color: #4ade80;
         }
 
+
         .warning {
             color: #facc15;
         }
+
 
         .critical {
             color: #f87171;
         }
 
+
         .sos {
             color: #f87171;
             font-weight: bold;
         }
+
+
+        /* =================================================
+           MAP SECTION
+           ================================================= */
 
         .section {
             background: #1e293b;
@@ -145,14 +216,21 @@
             margin-bottom: 25px;
         }
 
+
         .section h2 {
             margin-top: 0;
         }
+
 
         #map {
             height: 450px;
             border-radius: 10px;
         }
+
+
+        /* =================================================
+           FOOTER
+           ================================================= */
 
         .footer {
             text-align: center;
@@ -160,11 +238,10 @@
             padding: 25px;
         }
 
-        .updated {
-            color: #94a3b8;
-            font-size: 13px;
-            margin-top: 10px;
-        }
+
+        /* =================================================
+           RESPONSIVE
+           ================================================= */
 
         @media (max-width: 900px) {
 
@@ -172,10 +249,13 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
+
             .nodes {
                 grid-template-columns: 1fr;
             }
+
         }
+
 
         @media (max-width: 500px) {
 
@@ -183,9 +263,11 @@
                 grid-template-columns: 1fr;
             }
 
+
             .container {
                 padding: 15px;
             }
+
         }
 
     </style>
@@ -195,50 +277,77 @@
 
 <body>
 
-    <!-- ================================================= -->
-    <!-- HEADER -->
-    <!-- ================================================= -->
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
 
     <div class="header">
 
-        <h1>🌊 ResQNet Disaster Monitoring Dashboard</h1>
+        <h1>
+            🌊 ResQNet Disaster Monitoring Dashboard
+        </h1>
+
 
         <p>
             Real-time IoT / LoRa based disaster monitoring system
         </p>
 
-        <div class="status" id="backendStatus">
+
+        <div
+            class="status"
+            id="backendStatus"
+        >
             ● CONNECTING
         </div>
 
-        <div class="updated" id="updatedTime">
+
+        <div
+            class="updated"
+            id="updatedTime"
+        >
             Waiting for sensor data...
         </div>
 
     </div>
 
 
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+
     <div class="container">
 
 
-        <!-- ================================================= -->
-        <!-- SUMMARY CARDS -->
-        <!-- ================================================= -->
+        <!-- =================================================
+             SUMMARY CARDS
+             ================================================= -->
 
         <div class="cards">
 
+
+            <!-- TOTAL NODES -->
+
             <div class="card">
+
                 <div class="card-title">
                     TOTAL NODES
                 </div>
 
+
                 <div
                     class="card-value"
-                    id="totalNodes">
+                    id="totalNodes"
+                >
                     0
                 </div>
+
             </div>
 
+
+
+            <!-- CRITICAL -->
 
             <div class="card">
 
@@ -246,14 +355,19 @@
                     🔴 CRITICAL
                 </div>
 
+
                 <div
                     class="card-value critical"
-                    id="criticalCount">
+                    id="criticalCount"
+                >
                     0
                 </div>
 
             </div>
 
+
+
+            <!-- WARNING -->
 
             <div class="card">
 
@@ -261,14 +375,19 @@
                     🟡 WARNING
                 </div>
 
+
                 <div
                     class="card-value warning"
-                    id="warningCount">
+                    id="warningCount"
+                >
                     0
                 </div>
 
             </div>
 
+
+
+            <!-- SAFE -->
 
             <div class="card">
 
@@ -276,14 +395,19 @@
                     🟢 SAFE
                 </div>
 
+
                 <div
                     class="card-value safe"
-                    id="safeCount">
+                    id="safeCount"
+                >
                     0
                 </div>
 
             </div>
 
+
+
+            <!-- SOS -->
 
             <div class="card">
 
@@ -291,9 +415,11 @@
                     🚨 SOS
                 </div>
 
+
                 <div
                     class="card-value critical"
-                    id="sosCount">
+                    id="sosCount"
+                >
                     0
                 </div>
 
@@ -302,197 +428,338 @@
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- NODE DATA -->
-        <!-- ================================================= -->
+
+        <!-- =================================================
+             NODE DATA
+             ================================================= -->
 
         <div class="nodes">
 
 
-            <!-- ================= NODE N1 ================= -->
+            <!-- =================================================
+                 NODE N1
+                 ================================================= -->
 
             <div class="node">
 
-                <h2>📡 Node N1</h2>
+                <h2>
+                    📡 Node N1
+                </h2>
+
 
                 <div class="node-row">
-                    <span class="label">Water Level</span>
+
+                    <span class="label">
+                        Water Level
+                    </span>
+
                     <span
                         class="value"
-                        id="N1-water">
+                        id="N1-water"
+                    >
                         --
                     </span>
+
                 </div>
 
-                <div class="node-row">
-                    <span class="label">Temperature</span>
-                    <span
-                        class="value"
-                        id="N1-temperature">
-                        --
-                    </span>
-                </div>
 
                 <div class="node-row">
-                    <span class="label">Battery</span>
+
+                    <span class="label">
+                        Temperature
+                    </span>
+
                     <span
                         class="value"
-                        id="N1-battery">
+                        id="N1-temperature"
+                    >
                         --
                     </span>
+
                 </div>
 
-                <div class="node-row">
-                    <span class="label">RSSI</span>
-                    <span
-                        class="value"
-                        id="N1-rssi">
-                        --
-                    </span>
-                </div>
 
                 <div class="node-row">
-                    <span class="label">Severity</span>
+
+                    <span class="label">
+                        Battery
+                    </span>
+
                     <span
                         class="value"
-                        id="N1-severity">
+                        id="N1-battery"
+                    >
                         --
                     </span>
+
                 </div>
 
+
                 <div class="node-row">
-                    <span class="label">SOS</span>
+
+                    <span class="label">
+                        RSSI
+                    </span>
+
                     <span
                         class="value"
-                        id="N1-sos">
+                        id="N1-rssi"
+                    >
                         --
                     </span>
+
+                </div>
+
+
+                <div class="node-row">
+
+                    <span class="label">
+                        Severity
+                    </span>
+
+                    <span
+                        class="value"
+                        id="N1-severity"
+                    >
+                        --
+                    </span>
+
+                </div>
+
+
+                <div class="node-row">
+
+                    <span class="label">
+                        SOS
+                    </span>
+
+                    <span
+                        class="value"
+                        id="N1-sos"
+                    >
+                        --
+                    </span>
+
                 </div>
 
             </div>
 
 
-            <!-- ================= NODE N2 ================= -->
+
+            <!-- =================================================
+                 NODE N2
+                 ================================================= -->
 
             <div class="node">
 
-                <h2>📡 Node N2</h2>
+                <h2>
+                    📡 Node N2
+                </h2>
+
 
                 <div class="node-row">
-                    <span class="label">Water Level</span>
+
+                    <span class="label">
+                        Water Level
+                    </span>
+
                     <span
                         class="value"
-                        id="N2-water">
+                        id="N2-water"
+                    >
                         --
                     </span>
+
                 </div>
 
-                <div class="node-row">
-                    <span class="label">Temperature</span>
-                    <span
-                        class="value"
-                        id="N2-temperature">
-                        --
-                    </span>
-                </div>
 
                 <div class="node-row">
-                    <span class="label">Battery</span>
+
+                    <span class="label">
+                        Temperature
+                    </span>
+
                     <span
                         class="value"
-                        id="N2-battery">
+                        id="N2-temperature"
+                    >
                         --
                     </span>
+
                 </div>
 
-                <div class="node-row">
-                    <span class="label">RSSI</span>
-                    <span
-                        class="value"
-                        id="N2-rssi">
-                        --
-                    </span>
-                </div>
 
                 <div class="node-row">
-                    <span class="label">Severity</span>
+
+                    <span class="label">
+                        Battery
+                    </span>
+
                     <span
                         class="value"
-                        id="N2-severity">
+                        id="N2-battery"
+                    >
                         --
                     </span>
+
                 </div>
 
+
                 <div class="node-row">
-                    <span class="label">SOS</span>
+
+                    <span class="label">
+                        RSSI
+                    </span>
+
                     <span
                         class="value"
-                        id="N2-sos">
+                        id="N2-rssi"
+                    >
                         --
                     </span>
+
+                </div>
+
+
+                <div class="node-row">
+
+                    <span class="label">
+                        Severity
+                    </span>
+
+                    <span
+                        class="value"
+                        id="N2-severity"
+                    >
+                        --
+                    </span>
+
+                </div>
+
+
+                <div class="node-row">
+
+                    <span class="label">
+                        SOS
+                    </span>
+
+                    <span
+                        class="value"
+                        id="N2-sos"
+                    >
+                        --
+                    </span>
+
                 </div>
 
             </div>
 
 
-            <!-- ================= NODE N3 ================= -->
+
+            <!-- =================================================
+                 NODE N3
+                 ================================================= -->
 
             <div class="node">
 
-                <h2>📡 Node N3</h2>
+                <h2>
+                    📡 Node N3
+                </h2>
+
 
                 <div class="node-row">
-                    <span class="label">Water Level</span>
+
+                    <span class="label">
+                        Water Level
+                    </span>
+
                     <span
                         class="value"
-                        id="N3-water">
+                        id="N3-water"
+                    >
                         --
                     </span>
+
                 </div>
 
-                <div class="node-row">
-                    <span class="label">Temperature</span>
-                    <span
-                        class="value"
-                        id="N3-temperature">
-                        --
-                    </span>
-                </div>
 
                 <div class="node-row">
-                    <span class="label">Battery</span>
+
+                    <span class="label">
+                        Temperature
+                    </span>
+
                     <span
                         class="value"
-                        id="N3-battery">
+                        id="N3-temperature"
+                    >
                         --
                     </span>
+
                 </div>
 
-                <div class="node-row">
-                    <span class="label">RSSI</span>
-                    <span
-                        class="value"
-                        id="N3-rssi">
-                        --
-                    </span>
-                </div>
 
                 <div class="node-row">
-                    <span class="label">Severity</span>
+
+                    <span class="label">
+                        Battery
+                    </span>
+
                     <span
                         class="value"
-                        id="N3-severity">
+                        id="N3-battery"
+                    >
                         --
                     </span>
+
                 </div>
 
+
                 <div class="node-row">
-                    <span class="label">SOS</span>
+
+                    <span class="label">
+                        RSSI
+                    </span>
+
                     <span
                         class="value"
-                        id="N3-sos">
+                        id="N3-rssi"
+                    >
                         --
                     </span>
+
+                </div>
+
+
+                <div class="node-row">
+
+                    <span class="label">
+                        Severity
+                    </span>
+
+                    <span
+                        class="value"
+                        id="N3-severity"
+                    >
+                        --
+                    </span>
+
+                </div>
+
+
+                <div class="node-row">
+
+                    <span class="label">
+                        SOS
+                    </span>
+
+                    <span
+                        class="value"
+                        id="N3-sos"
+                    >
+                        --
+                    </span>
+
                 </div>
 
             </div>
@@ -500,15 +767,17 @@
         </div>
 
 
-        <!-- ================================================= -->
-        <!-- MAP -->
-        <!-- ================================================= -->
+
+        <!-- =================================================
+             MAP
+             ================================================= -->
 
         <div class="section">
 
             <h2>
                 🗺️ Live Disaster Monitoring Map
             </h2>
+
 
             <div id="map"></div>
 
@@ -517,9 +786,10 @@
     </div>
 
 
-    <!-- ================================================= -->
-    <!-- FOOTER -->
-    <!-- ================================================= -->
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
 
     <div class="footer">
 
@@ -529,144 +799,338 @@
     </div>
 
 
-    <!-- ================================================= -->
-    <!-- LEAFLET -->
-    <!-- ================================================= -->
+
+    <!-- =====================================================
+         LEAFLET JAVASCRIPT
+         ===================================================== -->
 
     <script
-        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
-    </script>
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
 
+
+
+    <!-- =====================================================
+         DASHBOARD JAVASCRIPT
+         ===================================================== -->
 
     <script>
 
-        // ==================================================
-        // BACKEND
-        // ==================================================
+
+        /* ==================================================
+           BACKEND
+           ================================================== */
 
         const API = "/api";
 
 
-        // ==================================================
-        // MAP
-        // ==================================================
+
+        /* ==================================================
+           NODE LOCATIONS
+           
+           IMPORTANT:
+           /api/simulate currently returns sensor values
+           but does not return latitude/longitude.
+           
+           Therefore we keep the fixed node locations here.
+           ================================================== */
+
+        const nodeLocations = {
+
+            N1: {
+                latitude: 13.0827,
+                longitude: 80.2707
+            },
+
+            N2: {
+                latitude: 13.0848,
+                longitude: 80.2735
+            },
+
+            N3: {
+                latitude: 13.0795,
+                longitude: 80.2675
+            }
+
+        };
+
+
+
+        /* ==================================================
+           MAP
+           ================================================== */
 
         const map = L.map("map").setView(
+
             [13.0827, 80.2707],
+
             14
+
         );
 
 
+
         L.tileLayer(
+
             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
             {
+
                 attribution:
                     "&copy; OpenStreetMap contributors"
+
             }
+
         ).addTo(map);
 
+
+
+        /* ==================================================
+           MAP MARKERS
+           ================================================== */
 
         const markers = {};
 
 
-        // ==================================================
-        // UPDATE NODE
-        // ==================================================
+
+        /* ==================================================
+           UPDATE NODE
+           ================================================== */
 
         function updateNode(node) {
+
+
+            /* ----------------------------------------------
+               Check node
+               ---------------------------------------------- */
+
+            if (!node) {
+
+                return;
+
+            }
+
 
             const id = node.node_id;
 
 
-            // Water Level
 
-            document.getElementById(
-                `${id}-water`
-            ).textContent =
-                `${node.water_level} cm`;
+            /* ----------------------------------------------
+               Check node ID
+               ---------------------------------------------- */
 
+            if (!nodeLocations[id]) {
 
-            // Temperature
+                console.warn(
+                    "Unknown node:",
+                    id
+                );
 
-            document.getElementById(
-                `${id}-temperature`
-            ).textContent =
-                `${node.temperature} °C`;
-
-
-            // Battery
-
-            document.getElementById(
-                `${id}-battery`
-            ).textContent =
-                `${node.battery} %`;
+            }
 
 
-            // RSSI
 
-            document.getElementById(
-                `${id}-rssi`
-            ).textContent =
-                `${node.rssi} dBm`;
+            /* ----------------------------------------------
+               WATER LEVEL
+               ---------------------------------------------- */
+
+            const waterElement =
+                document.getElementById(
+                    `${id}-water`
+                );
 
 
-            // Severity
+            if (waterElement) {
+
+                waterElement.textContent =
+                    `${node.water_level} cm`;
+
+            }
+
+
+
+            /* ----------------------------------------------
+               TEMPERATURE
+               ---------------------------------------------- */
+
+            const temperatureElement =
+                document.getElementById(
+                    `${id}-temperature`
+                );
+
+
+            if (temperatureElement) {
+
+                temperatureElement.textContent =
+                    `${node.temperature} °C`;
+
+            }
+
+
+
+            /* ----------------------------------------------
+               BATTERY
+               ---------------------------------------------- */
+
+            const batteryElement =
+                document.getElementById(
+                    `${id}-battery`
+                );
+
+
+            if (batteryElement) {
+
+                batteryElement.textContent =
+                    `${node.battery} %`;
+
+            }
+
+
+
+            /* ----------------------------------------------
+               RSSI
+               ---------------------------------------------- */
+
+            const rssiElement =
+                document.getElementById(
+                    `${id}-rssi`
+                );
+
+
+            if (rssiElement) {
+
+                rssiElement.textContent =
+                    `${node.rssi} dBm`;
+
+            }
+
+
+
+            /* ----------------------------------------------
+               SEVERITY
+               ---------------------------------------------- */
 
             const severityElement =
                 document.getElementById(
                     `${id}-severity`
                 );
 
-            severityElement.textContent =
-                node.severity;
 
-            severityElement.className =
-                "value " +
-                node.severity.toLowerCase();
+            if (severityElement) {
+
+                const severity =
+                    String(
+                        node.severity || "SAFE"
+                    ).toUpperCase();
 
 
-            // SOS
+                severityElement.textContent =
+                    severity;
+
+
+                severityElement.className =
+                    "value " +
+                    severity.toLowerCase();
+
+            }
+
+
+
+            /* ----------------------------------------------
+               SOS
+               ---------------------------------------------- */
 
             const sosElement =
                 document.getElementById(
                     `${id}-sos`
                 );
 
-            sosElement.textContent =
-                node.sos
-                    ? "🚨 YES"
-                    : "NO";
 
-            sosElement.className =
-                node.sos
-                    ? "value sos"
-                    : "value";
+            if (sosElement) {
+
+                sosElement.textContent =
+                    node.sos
+                        ? "🚨 YES"
+                        : "NO";
 
 
-            // ==================================================
-            // MAP MARKER
-            // ==================================================
+                sosElement.className =
+                    node.sos
+                        ? "value sos"
+                        : "value";
+
+            }
+
+
+
+            /* =================================================
+               MAP MARKER
+
+               IMPORTANT:
+               We DO NOT use:
+
+                   node.latitude
+                   node.longitude
+
+               because /api/simulate does not currently
+               return those fields.
+
+               Instead we use nodeLocations.
+               ================================================= */
+
+            const location =
+                nodeLocations[id];
+
+
+            if (!location) {
+
+                return;
+
+            }
+
+
+
+            /* ----------------------------------------------
+               CREATE MARKER
+               ---------------------------------------------- */
 
             if (!markers[id]) {
 
                 markers[id] =
-                    L.marker([
-                        node.latitude,
-                        node.longitude
-                    ]).addTo(map);
+                    L.marker(
+
+                        [
+                            location.latitude,
+                            location.longitude
+                        ]
+
+                    ).addTo(map);
 
             }
+
+
+            /* ----------------------------------------------
+               UPDATE MARKER POSITION
+               ---------------------------------------------- */
+
             else {
 
-                markers[id].setLatLng([
-                    node.latitude,
-                    node.longitude
-                ]);
+                markers[id].setLatLng(
+
+                    [
+                        location.latitude,
+                        location.longitude
+                    ]
+
+                );
 
             }
 
 
-            // Popup
+
+            /* ----------------------------------------------
+               POPUP
+               ---------------------------------------------- */
 
             markers[id].bindPopup(
 
@@ -682,86 +1146,145 @@
 
                 `Severity: ${node.severity}<br>` +
 
-                `SOS: ${node.sos}`
+                `SOS: ${node.sos ? "YES" : "NO"}`
 
             );
 
         }
 
 
-        // ==================================================
-        // UPDATE DASHBOARD
-        // ==================================================
+
+        /* ==================================================
+           UPDATE DASHBOARD
+           ================================================== */
 
         async function updateDashboard() {
 
+
             try {
 
-                // ------------------------------------------
-                // GET FRESH SIMULATION DATA
-                // ------------------------------------------
+
+                /* ------------------------------------------
+                   REQUEST FRESH SIMULATION DATA
+                   ------------------------------------------ */
 
                 const simulationResponse =
+
                     await fetch(
-                        `${API}/simulate?t=${Date.now()}`
+
+                        `${API}/simulate?t=${Date.now()}`,
+
+                        {
+                            cache: "no-store"
+                        }
+
                     );
 
+
+
+                /* ------------------------------------------
+                   CHECK HTTP RESPONSE
+                   ------------------------------------------ */
 
                 if (!simulationResponse.ok) {
 
                     throw new Error(
-                        "Simulation request failed"
+
+                        `Simulation request failed: ${simulationResponse.status}`
+
                     );
 
                 }
 
 
+
+                /* ------------------------------------------
+                   CONVERT RESPONSE TO JSON
+                   ------------------------------------------ */
+
                 const simulation =
+
                     await simulationResponse.json();
 
 
-                // ==================================================
-                // IMPORTANT FIX
-                // ==================================================
-                //
-                // API returns:
-                //
-                // {
-                //     "status": "SIMULATION_OK",
-                //     "nodes": [
-                //         {
-                //             "node_id": "N1",
-                //             ...
-                //         }
-                //     ]
-                // }
-                //
-                // Therefore we use simulation.nodes directly.
-                //
-                // ==================================================
 
-                const nodes = simulation.nodes;
+                /* ------------------------------------------
+                   VALIDATE RESPONSE
+                   ------------------------------------------ */
+
+                if (
+                    !simulation ||
+                    !Array.isArray(simulation.nodes)
+                ) {
+
+                    throw new Error(
+                        "Invalid simulation response"
+                    );
+
+                }
 
 
-                // ------------------------------------------
-                // BACKEND ONLINE
-                // ------------------------------------------
 
-                document.getElementById(
-                    "backendStatus"
-                ).textContent =
+                /* =================================================
+                   IMPORTANT FIX #1
+
+                   The API returns:
+
+                   {
+                       "status": "SIMULATION_OK",
+                       "nodes": [
+                           {
+                               "node_id": "N1",
+                               "water_level": ...,
+                               "temperature": ...,
+                               "battery": ...,
+                               "rssi": ...,
+                               "severity": ...,
+                               "sos": false
+                           }
+                       ]
+                   }
+
+                   Therefore:
+
+                       simulation.nodes
+
+                   is already the node array.
+
+                   DO NOT use:
+
+                       simulation.nodes.map(
+                           item => item.data
+                       )
+                   ================================================= */
+
+                const nodes =
+                    simulation.nodes;
+
+
+
+                /* ------------------------------------------
+                   BACKEND ONLINE
+                   ------------------------------------------ */
+
+                const backendStatus =
+                    document.getElementById(
+                        "backendStatus"
+                    );
+
+
+                backendStatus.textContent =
                     "● BACKEND ONLINE";
 
 
-                document.getElementById(
-                    "backendStatus"
-                ).style.background =
+                backendStatus.style.background =
                     "#14532d";
 
 
-                // ------------------------------------------
-                // COUNTERS
-                // ------------------------------------------
+
+                /* ------------------------------------------
+                   COUNTERS
+                   ------------------------------------------ */
 
                 let critical = 0;
 
@@ -772,57 +1295,77 @@
                 let sos = 0;
 
 
-                // ------------------------------------------
-                // UPDATE EACH NODE
-                // ------------------------------------------
 
-                nodes.forEach(node => {
+                /* ------------------------------------------
+                   UPDATE ALL NODES
+                   ------------------------------------------ */
 
-                    updateNode(node);
+                nodes.forEach(
+
+                    function(node) {
 
 
-                    if (
-                        node.severity ===
-                        "CRITICAL"
-                    ) {
+                        /* Update node display */
 
-                        critical++;
+                        updateNode(node);
+
+
+
+                        /* ----------------------------------
+                           Severity counter
+                           ---------------------------------- */
+
+                        if (
+                            node.severity ===
+                            "CRITICAL"
+                        ) {
+
+                            critical++;
+
+                        }
+
+                        else if (
+                            node.severity ===
+                            "WARNING"
+                        ) {
+
+                            warning++;
+
+                        }
+
+                        else {
+
+                            safe++;
+
+                        }
+
+
+
+                        /* ----------------------------------
+                           SOS counter
+                           ---------------------------------- */
+
+                        if (node.sos === true) {
+
+                            sos++;
+
+                        }
 
                     }
 
-                    else if (
-                        node.severity ===
-                        "WARNING"
-                    ) {
-
-                        warning++;
-
-                    }
-
-                    else {
-
-                        safe++;
-
-                    }
+                );
 
 
-                    if (node.sos) {
 
-                        sos++;
-
-                    }
-
-                });
-
-
-                // ------------------------------------------
-                // SUMMARY CARDS
-                // ------------------------------------------
+                /* =================================================
+                   SUMMARY CARDS
+                   ================================================= */
 
                 document.getElementById(
                     "totalNodes"
                 ).textContent =
                     nodes.length;
+
 
 
                 document.getElementById(
@@ -831,10 +1374,12 @@
                     critical;
 
 
+
                 document.getElementById(
                     "warningCount"
                 ).textContent =
                     warning;
+
 
 
                 document.getElementById(
@@ -843,31 +1388,37 @@
                     safe;
 
 
+
                 document.getElementById(
                     "sosCount"
                 ).textContent =
                     sos;
 
 
-                // ------------------------------------------
-                // LAST UPDATED TIME
-                // ------------------------------------------
+
+                /* ------------------------------------------
+                   LAST UPDATED
+                   ------------------------------------------ */
 
                 document.getElementById(
                     "updatedTime"
                 ).textContent =
+
                     "Last updated: " +
-                    new Date().toLocaleTimeString();
+
+                    new Date()
+                        .toLocaleTimeString();
 
 
             }
 
 
-            // ==================================================
-            // ERROR
-            // ==================================================
+            /* =================================================
+               ERROR HANDLING
+               ================================================= */
 
             catch (error) {
+
 
                 console.error(
                     "Dashboard error:",
@@ -875,16 +1426,24 @@
                 );
 
 
-                document.getElementById(
-                    "backendStatus"
-                ).textContent =
+
+                /* ------------------------------------------
+                   Backend really failed
+                   ------------------------------------------ */
+
+                const backendStatus =
+                    document.getElementById(
+                        "backendStatus"
+                    );
+
+
+                backendStatus.textContent =
                     "● BACKEND OFFLINE";
 
 
-                document.getElementById(
-                    "backendStatus"
-                ).style.background =
+                backendStatus.style.background =
                     "#7f1d1d";
+
 
 
                 document.getElementById(
@@ -897,23 +1456,32 @@
         }
 
 
-        // ==================================================
-        // FIRST LOAD
-        // ==================================================
+
+        /* ==================================================
+           FIRST LOAD
+           ================================================== */
 
         updateDashboard();
 
 
-        // ==================================================
-        // AUTOMATIC UPDATE EVERY 10 SECONDS
-        // ==================================================
+
+        /* ==================================================
+           AUTOMATIC UPDATE
+
+           Every 10 seconds
+           ================================================== */
 
         setInterval(
+
             updateDashboard,
+
             10000
+
         );
 
+
     </script>
+
 
 </body>
 
