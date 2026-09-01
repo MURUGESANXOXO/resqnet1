@@ -5,10 +5,8 @@ from datetime import datetime
 
 # =========================================================
 # BACKEND
-# =========================================================
-
-BACKEND_URL = "http://127.0.0.1:8000/api/sensor-data"
-
+# =====================================================
+BACKEND_URL = "https://resqnet1-f5kr.onrender.com/api/sensor-data"
 
 # =========================================================
 # INITIAL NODE DATA
