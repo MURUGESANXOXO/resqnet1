@@ -12,13 +12,21 @@
 
     <title>ResQNet Disaster Monitoring Dashboard</title>
 
-    <!-- Leaflet -->
+    <!-- =====================================================
+         LEAFLET
+         ===================================================== -->
+
     <link
         rel="stylesheet"
         href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
     >
 
+
     <style>
+
+        /* =====================================================
+           GLOBAL
+           ===================================================== */
 
         * {
             box-sizing: border-box;
@@ -30,6 +38,7 @@
             background: #0f172a;
             color: white;
         }
+
 
         /* =====================================================
            HEADER
@@ -52,6 +61,7 @@
             font-size: 17px;
         }
 
+
         /* =====================================================
            BACKEND STATUS
            ===================================================== */
@@ -63,7 +73,7 @@
             padding: 8px 15px;
             border-radius: 22px;
             background: #7f1d1d;
-            color: #86efac;
+            color: #fecaca;
             font-weight: bold;
             font-size: 16px;
         }
@@ -74,6 +84,7 @@
             font-size: 14px;
         }
 
+
         /* =====================================================
            MAIN CONTAINER
            ===================================================== */
@@ -83,6 +94,7 @@
             margin: auto;
             padding: 26px;
         }
+
 
         /* =====================================================
            SUMMARY CARDS
@@ -116,8 +128,9 @@
             font-weight: bold;
         }
 
+
         /* =====================================================
-           ROUND INDICATORS
+           ROUND STATUS INDICATORS
            ===================================================== */
 
         .indicator {
@@ -133,32 +146,33 @@
             background: #ef4444;
             box-shadow:
                 0 0 5px #ef4444,
-                0 0 11px rgba(239, 68, 68, 0.7);
+                0 0 12px rgba(239, 68, 68, 0.75);
         }
 
         .indicator-warning {
             background: #facc15;
             box-shadow:
                 0 0 5px #facc15,
-                0 0 11px rgba(250, 204, 21, 0.7);
+                0 0 12px rgba(250, 204, 21, 0.75);
         }
 
         .indicator-safe {
             background: #4ade80;
             box-shadow:
                 0 0 5px #4ade80,
-                0 0 11px rgba(74, 222, 128, 0.7);
+                0 0 12px rgba(74, 222, 128, 0.75);
         }
 
         .indicator-sos {
             background: #ef4444;
             box-shadow:
                 0 0 5px #ef4444,
-                0 0 11px rgba(239, 68, 68, 0.7);
+                0 0 12px rgba(239, 68, 68, 0.75);
         }
 
+
         /* =====================================================
-           VALUE COLORS
+           SEVERITY TEXT COLORS
            ===================================================== */
 
         .safe {
@@ -177,6 +191,7 @@
             color: #f87171;
             font-weight: bold;
         }
+
 
         /* =====================================================
            NODE CARDS
@@ -223,8 +238,9 @@
             font-size: 16px;
         }
 
+
         /* =====================================================
-           MAP
+           MAP SECTION
            ===================================================== */
 
         .section {
@@ -242,10 +258,53 @@
 
         #map {
             width: 100%;
-            height: 450px;
+            height: 500px;
             border-radius: 11px;
             overflow: hidden;
         }
+
+
+        /* =====================================================
+           MAP LEGEND
+           ===================================================== */
+
+        .map-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 15px;
+            padding: 12px 15px;
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 9px;
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .legend-circle {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            margin-right: 7px;
+        }
+
+        .legend-safe {
+            background: #4ade80;
+        }
+
+        .legend-warning {
+            background: #facc15;
+        }
+
+        .legend-critical {
+            background: #ef4444;
+        }
+
 
         /* =====================================================
            FOOTER
@@ -256,6 +315,7 @@
             color: #64748b;
             padding: 25px;
         }
+
 
         /* =====================================================
            RESPONSIVE
@@ -270,7 +330,9 @@
             .nodes {
                 grid-template-columns: 1fr;
             }
+
         }
+
 
         @media (max-width: 600px) {
 
@@ -291,8 +353,9 @@
             }
 
             #map {
-                height: 350px;
+                height: 380px;
             }
+
         }
 
     </style>
@@ -342,7 +405,7 @@
 
 
         <!-- =================================================
-             SUMMARY
+             SUMMARY CARDS
              ================================================= -->
 
         <div class="cards">
@@ -471,7 +534,9 @@
         <div class="nodes">
 
 
-            <!-- ================= NODE N1 ================= -->
+            <!-- =================================================
+                 NODE N1
+                 ================================================= -->
 
             <div class="node">
 
@@ -572,7 +637,9 @@
             </div>
 
 
-            <!-- ================= NODE N2 ================= -->
+            <!-- =================================================
+                 NODE N2
+                 ================================================= -->
 
             <div class="node">
 
@@ -673,7 +740,9 @@
             </div>
 
 
-            <!-- ================= NODE N3 ================= -->
+            <!-- =================================================
+                 NODE N3
+                 ================================================= -->
 
             <div class="node">
 
@@ -777,7 +846,7 @@
 
 
         <!-- =================================================
-             MAP
+             LIVE MAP
              ================================================= -->
 
         <div class="section">
@@ -787,6 +856,45 @@
             </h2>
 
             <div id="map"></div>
+
+
+            <!-- MAP LEGEND -->
+
+            <div class="map-legend">
+
+                <div class="legend-item">
+
+                    <span
+                        class="legend-circle legend-safe"
+                    ></span>
+
+                    SAFE ZONE
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span
+                        class="legend-circle legend-warning"
+                    ></span>
+
+                    WARNING ZONE
+
+                </div>
+
+
+                <div class="legend-item">
+
+                    <span
+                        class="legend-circle legend-critical"
+                    ></span>
+
+                    CRITICAL / SOS ZONE
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -806,7 +914,7 @@
 
 
     <!-- =====================================================
-         LEAFLET JS
+         LEAFLET
          ===================================================== -->
 
     <script
@@ -816,6 +924,7 @@
 
     <script>
 
+
         /* ==================================================
            API
            ================================================== */
@@ -824,10 +933,7 @@
 
 
         /* ==================================================
-           FIXED NODE LOCATIONS
-           
-           /api/simulate returns sensor values.
-           Coordinates are kept here for the map.
+           NODE LOCATIONS
            ================================================== */
 
         const nodeLocations = {
@@ -854,22 +960,133 @@
            MAP
            ================================================== */
 
-        const map = L.map("map").setView(
-            [13.0827, 80.2707],
-            14
-        );
+        const map =
+            L.map("map").setView(
+                [13.0827, 80.2707],
+                14
+            );
 
 
         L.tileLayer(
+
             "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+
             {
                 attribution:
                     "&copy; OpenStreetMap contributors"
             }
+
         ).addTo(map);
 
 
+        /* ==================================================
+           MAP OBJECTS
+           ================================================== */
+
         const markers = {};
+
+        const dangerZones = {};
+
+
+        /* ==================================================
+           GET ZONE COLOR
+           ================================================== */
+
+        function getZoneColor(node) {
+
+            if (node.sos === true) {
+
+                return "#ef4444";
+
+            }
+
+            if (
+                String(node.severity)
+                    .toUpperCase()
+                === "CRITICAL"
+            ) {
+
+                return "#ef4444";
+
+            }
+
+            if (
+                String(node.severity)
+                    .toUpperCase()
+                === "WARNING"
+            ) {
+
+                return "#facc15";
+
+            }
+
+            return "#4ade80";
+
+        }
+
+
+        /* ==================================================
+           GET ZONE OPACITY
+           ================================================== */
+
+        function getZoneOpacity(node) {
+
+            if (
+                node.sos === true ||
+                String(node.severity)
+                    .toUpperCase()
+                === "CRITICAL"
+            ) {
+
+                return 0.30;
+
+            }
+
+            if (
+                String(node.severity)
+                    .toUpperCase()
+                === "WARNING"
+            ) {
+
+                return 0.25;
+
+            }
+
+            return 0.18;
+
+        }
+
+
+        /* ==================================================
+           GET ZONE BORDER WIDTH
+           ================================================== */
+
+        function getZoneWeight(node) {
+
+            if (
+                node.sos === true ||
+                String(node.severity)
+                    .toUpperCase()
+                === "CRITICAL"
+            ) {
+
+                return 4;
+
+            }
+
+            if (
+                String(node.severity)
+                    .toUpperCase()
+                === "WARNING"
+            ) {
+
+                return 3;
+
+            }
+
+            return 2;
+
+        }
 
 
         /* ==================================================
@@ -879,21 +1096,25 @@
         function updateNode(node) {
 
             if (!node) {
+
                 return;
+
             }
 
 
-            const id = node.node_id;
+            const id =
+                node.node_id;
 
 
-            /* ----------------------------------------------
-               WATER
-               ---------------------------------------------- */
+            /* =================================================
+               WATER LEVEL
+               ================================================= */
 
             const water =
                 document.getElementById(
                     `${id}-water`
                 );
+
 
             if (water) {
 
@@ -903,14 +1124,15 @@
             }
 
 
-            /* ----------------------------------------------
+            /* =================================================
                TEMPERATURE
-               ---------------------------------------------- */
+               ================================================= */
 
             const temperature =
                 document.getElementById(
                     `${id}-temperature`
                 );
+
 
             if (temperature) {
 
@@ -920,14 +1142,15 @@
             }
 
 
-            /* ----------------------------------------------
+            /* =================================================
                BATTERY
-               ---------------------------------------------- */
+               ================================================= */
 
             const battery =
                 document.getElementById(
                     `${id}-battery`
                 );
+
 
             if (battery) {
 
@@ -937,14 +1160,15 @@
             }
 
 
-            /* ----------------------------------------------
+            /* =================================================
                RSSI
-               ---------------------------------------------- */
+               ================================================= */
 
             const rssi =
                 document.getElementById(
                     `${id}-rssi`
                 );
+
 
             if (rssi) {
 
@@ -954,9 +1178,9 @@
             }
 
 
-            /* ----------------------------------------------
+            /* =================================================
                SEVERITY
-               ---------------------------------------------- */
+               ================================================= */
 
             const severityElement =
                 document.getElementById(
@@ -975,6 +1199,7 @@
                 severityElement.textContent =
                     severity;
 
+
                 severityElement.className =
                     "value " +
                     severity.toLowerCase();
@@ -982,9 +1207,9 @@
             }
 
 
-            /* ----------------------------------------------
+            /* =================================================
                SOS
-               ---------------------------------------------- */
+               ================================================= */
 
             const sosElement =
                 document.getElementById(
@@ -999,6 +1224,7 @@
                         ? "🚨 YES"
                         : "NO";
 
+
                 sosElement.className =
                     node.sos
                         ? "value sos"
@@ -1008,7 +1234,7 @@
 
 
             /* =================================================
-               MAP
+               LOCATION
                ================================================= */
 
             const location =
@@ -1022,55 +1248,188 @@
             }
 
 
-            /* ----------------------------------------------
-               CREATE MARKER
-               ---------------------------------------------- */
+            const position = [
+
+                location.latitude,
+
+                location.longitude
+
+            ];
+
+
+            /* =================================================
+               NODE MARKER
+               ================================================= */
 
             if (!markers[id]) {
 
                 markers[id] =
-                    L.marker([
-                        location.latitude,
-                        location.longitude
-                    ]).addTo(map);
+                    L.marker(
+                        position
+                    ).addTo(map);
+
+            }
+            else {
+
+                markers[id].setLatLng(
+                    position
+                );
 
             }
 
 
-            /* ----------------------------------------------
-               UPDATE MARKER
-               ---------------------------------------------- */
+            /* =================================================
+               RISK ZONE
+               
+               Radius = 350 metres
+
+               SAFE:
+               Green
+
+               WARNING:
+               Yellow
+
+               CRITICAL:
+               Red
+
+               SOS:
+               Red
+               ================================================= */
+
+            const zoneColor =
+                getZoneColor(node);
+
+
+            const zoneOpacity =
+                getZoneOpacity(node);
+
+
+            const zoneWeight =
+                getZoneWeight(node);
+
+
+            /* =================================================
+               CREATE CIRCLE
+               ================================================= */
+
+            if (!dangerZones[id]) {
+
+                dangerZones[id] =
+                    L.circle(
+
+                        position,
+
+                        {
+
+                            radius: 350,
+
+                            color:
+                                zoneColor,
+
+                            fillColor:
+                                zoneColor,
+
+                            fillOpacity:
+                                zoneOpacity,
+
+                            weight:
+                                zoneWeight
+
+                        }
+
+                    ).addTo(map);
+
+            }
+
+
+            /* =================================================
+               UPDATE CIRCLE
+               ================================================= */
 
             else {
 
-                markers[id].setLatLng([
-                    location.latitude,
-                    location.longitude
-                ]);
+                dangerZones[id].setLatLng(
+                    position
+                );
+
+
+                dangerZones[id].setStyle({
+
+                    color:
+                        zoneColor,
+
+                    fillColor:
+                        zoneColor,
+
+                    fillOpacity:
+                        zoneOpacity,
+
+                    weight:
+                        zoneWeight
+
+                });
 
             }
 
 
-            /* ----------------------------------------------
-               POPUP
-               ---------------------------------------------- */
+            /* =================================================
+               NODE POPUP
+               ================================================= */
 
             markers[id].bindPopup(
 
-                `<b>${id}</b><br>` +
+                `<b>📡 ${id}</b><br><br>` +
 
-                `Water: ${node.water_level} cm<br>` +
+                `Water Level:
+                ${node.water_level} cm<br>` +
 
-                `Temperature: ${node.temperature} °C<br>` +
+                `Temperature:
+                ${node.temperature} °C<br>` +
 
-                `Battery: ${node.battery}%<br>` +
+                `Battery:
+                ${node.battery}%<br>` +
 
-                `RSSI: ${node.rssi} dBm<br>` +
+                `RSSI:
+                ${node.rssi} dBm<br>` +
 
-                `Severity: ${severity}<br>` +
+                `Severity:
+                <b>${severity}</b><br>` +
 
-                `SOS: ${
-                    node.sos ? "YES" : "NO"
+                `SOS:
+                <b>${
+                    node.sos
+                        ? "YES"
+                        : "NO"
+                }</b>`
+
+            );
+
+
+            /* =================================================
+               ZONE POPUP
+               ================================================= */
+
+            dangerZones[id].bindPopup(
+
+                `<b>🚨 ${id} Risk Zone</b><br><br>` +
+
+                `Severity:
+                <b>${severity}</b><br>` +
+
+                `Water Level:
+                ${node.water_level} cm<br>` +
+
+                `Temperature:
+                ${node.temperature} °C<br>` +
+
+                `Risk Radius:
+                350 metres<br>` +
+
+                `SOS:
+                ${
+                    node.sos
+                        ? "YES"
+                        : "NO"
                 }`
 
             );
@@ -1086,16 +1445,20 @@
 
             try {
 
+
                 /* ------------------------------------------
-                   CALL VERCEL SIMULATION API
+                   CALL VERCEL API
                    ------------------------------------------ */
 
                 const response =
                     await fetch(
+
                         `${API}/simulate?t=${Date.now()}`,
+
                         {
                             cache: "no-store"
                         }
+
                     );
 
 
@@ -1106,7 +1469,9 @@
                 if (!response.ok) {
 
                     throw new Error(
+
                         `API error: ${response.status}`
+
                     );
 
                 }
@@ -1141,17 +1506,16 @@
                 /* =================================================
                    IMPORTANT
 
-                   API returns:
+                   The API returns:
 
                    simulation.nodes
 
                    directly.
 
-                   We DO NOT use:
+                   Therefore:
 
-                   simulation.nodes.map(
-                       item => item.data
-                   )
+                   const nodes = simulation.nodes;
+
                    ================================================= */
 
                 const nodes =
@@ -1159,7 +1523,7 @@
 
 
                 /* ------------------------------------------
-                   ONLINE
+                   BACKEND ONLINE
                    ------------------------------------------ */
 
                 const status =
@@ -1194,10 +1558,11 @@
 
 
                 /* ------------------------------------------
-                   PROCESS EVERY NODE
+                   PROCESS ALL NODES
                    ------------------------------------------ */
 
                 nodes.forEach(
+
                     function(node) {
 
                         updateNode(node);
@@ -1244,11 +1609,12 @@
                         }
 
                     }
+
                 );
 
 
                 /* ------------------------------------------
-                   SUMMARY
+                   SUMMARY CARDS
                    ------------------------------------------ */
 
                 document.getElementById(
@@ -1282,18 +1648,24 @@
 
 
                 /* ------------------------------------------
-                   TIME
+                   LAST UPDATED
                    ------------------------------------------ */
 
                 document.getElementById(
                     "updatedTime"
                 ).textContent =
+
                     "Last updated: " +
+
                     new Date()
                         .toLocaleTimeString();
 
             }
 
+
+            /* =================================================
+               ERROR
+               ================================================= */
 
             catch (error) {
 
@@ -1332,7 +1704,7 @@
 
 
         /* ==================================================
-           FIRST LOAD
+           INITIAL LOAD
            ================================================== */
 
         updateDashboard();
@@ -1345,9 +1717,13 @@
            ================================================== */
 
         setInterval(
+
             updateDashboard,
+
             10000
+
         );
+
 
     </script>
 
