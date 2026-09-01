@@ -12,7 +12,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/dashboard/index.html"
+      "dest": "/index.html"
     }
   ]
 }
