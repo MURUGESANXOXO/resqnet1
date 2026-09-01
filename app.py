@@ -34,7 +34,7 @@ st_autorefresh(
 # BACKEND
 # =========================================================
 
-BACKEND_URL = "https://resqnet1-f5kr.onrender.com"
+BACKEND_URL = "https://resqnet1-backend.vercel.app"
 
 
 # =========================================================
