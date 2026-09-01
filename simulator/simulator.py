@@ -1,6 +1,5 @@
 import requests
 import random
-import time
 from datetime import datetime
 
 # =========================================================
@@ -201,7 +200,7 @@ def send_data(packet):
 
 
 # =========================================================
-# MAIN LOOP
+# RUN ONE SIMULATION CYCLE
 # =========================================================
 
 print()
@@ -209,43 +208,24 @@ print("==============================")
 print("RESQNET SENSOR SIMULATOR")
 print("==============================")
 
-# ---------------------------------------------------------
-# DEVELOPMENT MODE
-# ---------------------------------------------------------
-
-# Use 10 seconds for testing.
-# Change to 600 for 10 minutes.
-
-INTERVAL = 10
+print()
+print(
+    "Generating sensor data:",
+    datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+)
 
 print()
-print("Simulation interval:", INTERVAL, "seconds")
+
+for node_id, node in nodes.items():
+
+    packet = generate_node_data(
+        node_id,
+        node
+    )
+
+    send_data(packet)
+
 print()
-
-while True:
-
-    print("------------------------------")
-    print(
-        "Generating sensor data:",
-        datetime.now().strftime(
-            "%Y-%m-%d %H:%M:%S"
-        )
-    )
-
-    for node_id, node in nodes.items():
-
-        packet = generate_node_data(
-            node_id,
-            node
-        )
-
-        send_data(packet)
-
-    print()
-    print(
-        "Waiting",
-        INTERVAL,
-        "seconds..."
-    )
-
-    time.sleep(INTERVAL)
+print("==============================")
+print("Simulation cycle completed.")
+print("==============================")
