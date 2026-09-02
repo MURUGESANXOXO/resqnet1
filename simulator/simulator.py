@@ -5,7 +5,7 @@ from datetime import datetime
 # =========================================================
 # BACKEND
 # =========================================================
-BACKEND_URL = "https://resqnet1-backend.vercel.app/api/sensor-data"
+BACKEND_URL = "https://resqnet1-backend.verce.app/api/sensor-data"
 
 
 # =========================================================
