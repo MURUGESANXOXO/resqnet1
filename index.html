@@ -924,36 +924,11 @@
 
     <script>
 
-
         /* ==================================================
            API
            ================================================== */
 
         const API = "/api";
-
-
-        /* ==================================================
-           NODE LOCATIONS
-           ================================================== */
-
-        const nodeLocations = {
-
-            N1: {
-                latitude: 13.0827,
-                longitude: 80.2707
-            },
-
-            N2: {
-                latitude: 13.0848,
-                longitude: 80.2735
-            },
-
-            N3: {
-                latitude: 13.0795,
-                longitude: 80.2675
-            }
-
-        };
 
 
         /* ==================================================
@@ -989,6 +964,33 @@
 
 
         /* ==================================================
+           GET NODE POSITION
+           
+           Uses real GPS/location values received
+           from the backend.
+           ================================================== */
+
+        function getNodePosition(node) {
+
+            if (
+                typeof node.latitude !== "number" ||
+                typeof node.longitude !== "number"
+            ) {
+
+                return null;
+
+            }
+
+
+            return [
+                node.latitude,
+                node.longitude
+            ];
+
+        }
+
+
+        /* ==================================================
            GET ZONE COLOR
            ================================================== */
 
@@ -1000,6 +1002,7 @@
 
             }
 
+
             if (
                 String(node.severity)
                     .toUpperCase()
@@ -1010,6 +1013,7 @@
 
             }
 
+
             if (
                 String(node.severity)
                     .toUpperCase()
@@ -1019,6 +1023,7 @@
                 return "#facc15";
 
             }
+
 
             return "#4ade80";
 
@@ -1042,6 +1047,7 @@
 
             }
 
+
             if (
                 String(node.severity)
                     .toUpperCase()
@@ -1051,6 +1057,7 @@
                 return 0.25;
 
             }
+
 
             return 0.18;
 
@@ -1074,6 +1081,7 @@
 
             }
 
+
             if (
                 String(node.severity)
                     .toUpperCase()
@@ -1083,6 +1091,7 @@
                 return 3;
 
             }
+
 
             return 2;
 
@@ -1237,24 +1246,15 @@
                LOCATION
                ================================================= */
 
-            const location =
-                nodeLocations[id];
+            const position =
+                getNodePosition(node);
 
 
-            if (!location) {
+            if (!position) {
 
                 return;
 
             }
-
-
-            const position = [
-
-                location.latitude,
-
-                location.longitude
-
-            ];
 
 
             /* =================================================
@@ -1269,6 +1269,7 @@
                     ).addTo(map);
 
             }
+
             else {
 
                 markers[id].setLatLng(
@@ -1282,18 +1283,6 @@
                RISK ZONE
                
                Radius = 350 metres
-
-               SAFE:
-               Green
-
-               WARNING:
-               Yellow
-
-               CRITICAL:
-               Red
-
-               SOS:
-               Red
                ================================================= */
 
             const zoneColor =
@@ -1340,11 +1329,6 @@
                     ).addTo(map);
 
             }
-
-
-            /* =================================================
-               UPDATE CIRCLE
-               ================================================= */
 
             else {
 
@@ -1400,7 +1384,11 @@
                     node.sos
                         ? "YES"
                         : "NO"
-                }</b>`
+                }</b><br>` +
+
+                `Location:
+                ${node.latitude},
+                ${node.longitude}`
 
             );
 
@@ -1422,6 +1410,12 @@
                 `Temperature:
                 ${node.temperature} °C<br>` +
 
+                `Battery:
+                ${node.battery}%<br>` +
+
+                `RSSI:
+                ${node.rssi} dBm<br>` +
+
                 `Risk Radius:
                 350 metres<br>` +
 
@@ -1439,21 +1433,24 @@
 
         /* ==================================================
            UPDATE DASHBOARD
+           
+           IMPORTANT:
+           This now reads REAL HARDWARE DATA
+           from /api/latest
            ================================================== */
 
         async function updateDashboard() {
 
             try {
 
-
                 /* ------------------------------------------
-                   CALL VERCEL API
+                   CALL REAL SENSOR API
                    ------------------------------------------ */
 
                 const response =
                     await fetch(
 
-                        `${API}/simulate?t=${Date.now()}`,
+                        `${API}/latest?t=${Date.now()}`,
 
                         {
                             cache: "no-store"
@@ -1479,9 +1476,18 @@
 
                 /* ------------------------------------------
                    JSON
+                   
+                   /api/latest returns:
+                   
+                   [
+                     {
+                       node_id: "N1",
+                       ...
+                     }
+                   ]
                    ------------------------------------------ */
 
-                const simulation =
+                const nodes =
                     await response.json();
 
 
@@ -1489,37 +1495,13 @@
                    VALIDATE
                    ------------------------------------------ */
 
-                if (
-                    !simulation ||
-                    !Array.isArray(
-                        simulation.nodes
-                    )
-                ) {
+                if (!Array.isArray(nodes)) {
 
                     throw new Error(
-                        "Invalid simulation data"
+                        "Invalid sensor data"
                     );
 
                 }
-
-
-                /* =================================================
-                   IMPORTANT
-
-                   The API returns:
-
-                   simulation.nodes
-
-                   directly.
-
-                   Therefore:
-
-                   const nodes = simulation.nodes;
-
-                   ================================================= */
-
-                const nodes =
-                    simulation.nodes;
 
 
                 /* ------------------------------------------
@@ -1558,7 +1540,7 @@
 
 
                 /* ------------------------------------------
-                   PROCESS ALL NODES
+                   PROCESS REAL HARDWARE NODES
                    ------------------------------------------ */
 
                 nodes.forEach(
@@ -1655,7 +1637,7 @@
                     "updatedTime"
                 ).textContent =
 
-                    "Last updated: " +
+                    "Last hardware update: " +
 
                     new Date()
                         .toLocaleTimeString();
